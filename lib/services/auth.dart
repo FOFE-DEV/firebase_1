@@ -28,4 +28,24 @@ class AuthService{
   Future logout()async{
     return await _auth.signOut();
   }
+
+  Future registerEmailAndPwd(String email,String password)async{
+    try {
+      UserCredential result=await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      return _userFromFirebase(result);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future loginEmailAndPwd(String email,String password)async{
+    try {
+      UserCredential result=await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return _userFromFirebase(result);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 }
