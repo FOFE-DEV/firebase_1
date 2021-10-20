@@ -1,4 +1,5 @@
 import 'package:firebase_1/models/user.dart' as U;
+import 'package:firebase_1/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService{
@@ -32,6 +33,11 @@ class AuthService{
   Future registerEmailAndPwd(String email,String password)async{
     try {
       UserCredential result=await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+      //create doc for user
+      dynamic uid= result.user!.uid;
+      await DatabaseService(uid: uid).updateData('0', "new member", 100);
+      //await 
       return _userFromFirebase(result);
     } catch (e) {
       print(e.toString());

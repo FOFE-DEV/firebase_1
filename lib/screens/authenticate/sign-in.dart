@@ -1,5 +1,6 @@
 import 'package:firebase_1/services/auth.dart';
 import 'package:firebase_1/shared/constant.dart';
+import 'package:firebase_1/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class SingIn extends StatefulWidget {
@@ -17,9 +18,10 @@ class _SingInState extends State<SingIn> {
   String email='';
   String pwd='';
   String error='';
+  bool loading=false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading? Loading(): Scaffold(
       backgroundColor: Colors.brown[100],
       appBar: AppBar(
         backgroundColor: Colors.brown[400],
@@ -56,7 +58,7 @@ class _SingInState extends State<SingIn> {
             children: [
               SizedBox(height: 10,),
               TextFormField(
-                decoration: textInputdecoration,
+                decoration: textInputdecoration.copyWith(hintText:"Email"),
                 onChanged: (value){
                   setState(() {
                     email=value;
@@ -69,6 +71,7 @@ class _SingInState extends State<SingIn> {
               ),
               SizedBox(height: 10,),
               TextFormField(
+                decoration: textInputdecoration.copyWith(hintText:"Password"),
                 obscureText: true,
                 onChanged: (value){
                   setState(() {
@@ -84,9 +87,13 @@ class _SingInState extends State<SingIn> {
               ElevatedButton(
                 onPressed: ()async{
                   if(_formKey.currentState!.validate()){
+                    setState(() {
+                      loading=true;
+                    });
                     dynamic result=await _auth.loginEmailAndPwd(email, pwd);
                   if(result==null){
                     setState(() {
+                      loading=false;
                       error='bad credential';
                     });
                   }
